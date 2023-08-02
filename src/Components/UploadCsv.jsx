@@ -1,39 +1,23 @@
 import { useState } from 'react';
 import Papa from 'papaparse';
-import { formattedData } from '../helpers/data';
-import { findOverlapDaysCount, sortListByProp } from '../helpers/sort';
-import { prop, slice, groupBy } from 'ramda';
+import {
+  formatResultsByDate,
+  getOverlapDaysByProjectId,
+} from '../helpers/data';
 
 const UploadCsv = () => {
   const [tableData, setTableData] = useState([]);
 
-  const uploadCsvHandler = (e) => {
-    const file = e.target.files[0];
+  const uploadCsvHandler = (event) => {
+    const file = event.target.files[0];
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (results) => {
-        const formatted = formattedData(results);
+      complete: (csvData) => {
+        const formattedResults = formatResultsByDate(csvData);
+        const overlapList = getOverlapDaysByProjectId(formattedResults);
 
-        let filteredData = [];
-
-        const result = groupBy(prop('ProjectID'))(formatted);
-
-        Object.keys(result).map((projectID) => {
-          const overlapCounts = findOverlapDaysCount(
-            result[projectID],
-            projectID
-          );
-          const sorted = slice(
-            0,
-            1,
-            sortListByProp(overlapCounts, 'OverlapDays', 'DESC')
-          );
-
-          filteredData = filteredData.concat(sorted);
-        });
-
-        setTableData(filteredData);
+        setTableData(overlapList);
       },
     });
   };
@@ -51,7 +35,7 @@ const UploadCsv = () => {
         </div>
       </div>
 
-      <div className='csv-table'>
+      <div className='csv__table'>
         {tableData?.length ? (
           <table>
             <thead>

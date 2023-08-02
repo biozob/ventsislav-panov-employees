@@ -7,7 +7,7 @@ const sorter = (by, dir = 'DESC') =>
 const sortListByProp = (data, by, direction) =>
   sort(sorter(by, direction), data);
 
-function getOverlapDaysCount(dateFrom1, dateTo1, dateFrom2, dateTo2) {
+const getOverlapDaysCount = (dateFrom1, dateTo1, dateFrom2, dateTo2) => {
   const startDate1 = moment.tz(dateFrom1, 'UTC');
   const endDate1 =
     dateTo1 === 'Present' ? moment().tz('UTC') : moment.tz(dateTo1, 'UTC');
@@ -23,10 +23,10 @@ function getOverlapDaysCount(dateFrom1, dateTo1, dateFrom2, dateTo2) {
   }
 
   return overlapEndDate.diff(overlapStartDate, 'days') + 1; // Adding 1 to include both start and end dates
-}
+};
 
 // Function to find overlap days count for each pair of objects
-function findOverlapDaysCount(objects, projectId) {
+const findOverlapDaysCount = (objects, projectId) => {
   const overlapCounts = [];
 
   for (let i = 0; i < objects.length; i++) {
@@ -48,6 +48,6 @@ function findOverlapDaysCount(objects, projectId) {
   }
 
   return overlapCounts;
-}
+};
 
 export { findOverlapDaysCount, sortListByProp };
