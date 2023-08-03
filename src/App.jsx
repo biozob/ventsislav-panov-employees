@@ -11,7 +11,10 @@ function App() {
         </a>
       </div>
       <h1>Task</h1>
-      <p>Pair of employees who have worked together</p>
+      <p>
+        Pair of employees who have worked together on
+        <br></br>common projects for the longest period of time
+      </p>
 
       <UploadCsv />
     </>
