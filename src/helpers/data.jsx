@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 import { findOverlapDaysCount, sortListByProp } from '../helpers/sort';
 import { prop, slice, groupBy } from 'ramda';
 
-function parseDate(dateString) {
+const parseDate = (dateString) => {
   const formats = [
     'MM/DD/YYYY',
     'DD/MM/YYYY',
@@ -22,22 +22,21 @@ function parseDate(dateString) {
   ];
 
   return moment(dateString, formats, true);
-}
+};
+
+const validateDate = (date) => {
+  return date.isValid() ? date.format('YYYY-MM-DD') : 'Invalid Date';
+};
 
 const formatResultsByDate = ({ data }) => {
   return data.map((row) => {
     const dateFrom = parseDate(row.DateFrom);
-    const dateTo = row.DateTo !== 'Present' ? parseDate(row.DateTo) : moment();
+    const dateTo = row.DateTo !== 'NULL' ? parseDate(row.DateTo) : moment();
 
     return {
       ...row,
-      DateFrom: dateFrom.isValid()
-        ? dateFrom.format('YYYY-MM-DD')
-        : 'Invalid Date',
-      DateTo:
-        row.DateTo !== 'Present' && dateTo.isValid()
-          ? dateTo.format('YYYY-MM-DD')
-          : 'Present',
+      DateFrom: validateDate(dateFrom),
+      DateTo: validateDate(dateTo),
     };
   });
 };
